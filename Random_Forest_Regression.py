@@ -58,7 +58,7 @@ print(f"Mean Absolute Error:  {Mean_Absolute_Error}")
 print(f"Root Mean Squared Error:  {Root_Mean_squared_Error}")
 print(f"R2 Score:  {r2}")
 
-# Feature importances
+# Feature importance
 
 importances = Best_Random_Forest_Model.feature_importances_
 
