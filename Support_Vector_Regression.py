@@ -45,3 +45,30 @@ print("SVR Results:")
 print("MAE:", mean_absolute_error(y_test, y_pred))
 print("RMSE:", np.sqrt(mean_squared_error(y_test, y_pred)))
 print("R2:", r2_score(y_test, y_pred))
+
+# Test different SVR parameters
+print("\nTesting different SVR parameters:")
+
+param_options = [
+    {"C": 10, "gamma": 0.1},
+    {"C": 100, "gamma": 0.1},
+    {"C": 100, "gamma": 0.01}
+]
+
+for params in param_options:
+    temp_model = SVR(kernel="rbf", C=params["C"], gamma=params["gamma"])
+    temp_model.fit(X_train, y_train)
+    temp_pred = temp_model.predict(X_test)
+
+    rmse = np.sqrt(mean_squared_error(y_test, temp_pred))
+    print(f"C={params['C']}, gamma={params['gamma']} -> RMSE: {rmse}")
+
+
+# Compare actual vs predicted values
+results_df = pd.DataFrame({
+    "Actual AQI": y_test.values,
+    "Predicted AQI": y_pred
+})
+
+print("\nSample predictions:")
+print(results_df.head())
