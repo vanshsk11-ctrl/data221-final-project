@@ -50,6 +50,11 @@ grid_search.fit(X_train, y_train)
 print("\n Best Parameters: ")
 print(grid_search.best_params_)
 
+# Cross-Validation Score
+cross_validation_score = np.sqrt(-grid_search.best_score_)
+print("\n Cross-Validation Score (RMSE): ")
+print(cross_validation_score)
+
 # Train the Best Model
 Best_Random_Forest_Model = grid_search.best_estimator_
 
