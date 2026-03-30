@@ -50,8 +50,8 @@ print("MAE:", mean_absolute_error(y_test, y_pred))
 print("RMSE:", root_mean_squared_error(y_test, y_pred))
 print("R2:", r2_score(y_test, y_pred))
 
-# Cross Validation (5-fold)
-cv_scores = cross_val_score(
+# Cross Validation (5-fold) - RMSE
+cv_rmse_scores = -cross_val_score(
     model,
     X_train,
     y_train,
@@ -59,10 +59,36 @@ cv_scores = cross_val_score(
     scoring="neg_root_mean_squared_error"
 )
 
-cv_rmse = -cv_scores
+# Cross Validation (5-fold) - MAE
+cv_mae_scores = -cross_val_score(
+    model,
+    X_train,
+    y_train,
+    cv=5,
+    scoring="neg_mean_absolute_error"
+)
 
-print("\nCross Validation RMSE scores:", cv_rmse)
-print("Average CV RMSE:", cv_rmse.mean())
+# Cross Validation (5-fold) - R2
+cv_r2_scores = cross_val_score(
+    model,
+    X_train,
+    y_train,
+    cv=5,
+    scoring="r2"
+)
+
+print("\nCross Validation RMSE scores:", cv_rmse_scores)
+print("Average CV RMSE:", cv_rmse_scores.mean())
+
+print("\nCross-validation Scores:")
+print("Mean:")
+print("  MAE:", round(cv_mae_scores.mean(), 2))
+print("  RMSE:", round(cv_rmse_scores.mean(), 2))
+print("  R2:", round(cv_r2_scores.mean(), 3))
+print("Standard Deviation:")
+print("  MAE:", round(cv_mae_scores.std(), 2))
+print("  RMSE:", round(cv_rmse_scores.std(), 2))
+print("  R2:", round(cv_r2_scores.std(), 3))
 
 # Test different SVR parameters
 print("\nTesting different SVR parameters:")
