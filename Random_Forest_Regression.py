@@ -2,7 +2,7 @@
 
 import pandas as pd
 import numpy as np
-from sklearn.model_selection import train_test_split, GridSearchCV
+from sklearn.model_selection import train_test_split, GridSearchCV, cross_val_score
 from sklearn.metrics import mean_squared_error, mean_absolute_error, r2_score
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.impute import SimpleImputer
@@ -50,13 +50,22 @@ grid_search.fit(X_train, y_train)
 print("\n Best Parameters: ")
 print(grid_search.best_params_)
 
-# Cross-Validation Score
-cross_validation_score = np.sqrt(-grid_search.best_score_)
-print("\n Cross-Validation Score (RMSE): ")
-print(cross_validation_score)
-
 # Train the Best Model
 Best_Random_Forest_Model = grid_search.best_estimator_
+
+# Cross Validation results
+cross_validation_mae = -cross_val_score(Best_Random_Forest_Model, X_train, y_train, cv=5, scoring='neg_mean_absolute_error', n_jobs=-1)
+cross_validation_rmse = np.sqrt(-cross_val_score(Best_Random_Forest_Model, X_train, y_train, cv=5, scoring='neg_mean_squared_error', n_jobs=-1))
+cross_validation_r2 = cross_val_score(Best_Random_Forest_Model, X_train, y_train, cv=5, scoring='r2', n_jobs=-1)
+
+print("\n Cross-Validation Results (5-Fold): ")
+print(f"Cross Validation MAE:  {cross_validation_mae.mean():.2f} ")
+print(f"Cross Validation RMSE: {cross_validation_rmse.mean():.2f} ")
+print(f"Cross Validation R2:   {cross_validation_r2.mean():.4f}")
+print("Cross Validation Standard Deviation:")
+print(f"Cross Validation MAE Std:  {cross_validation_mae.std():.2f}")
+print(f"Cross Validation RMSE Std: {cross_validation_rmse.std():.2f}")
+print(f"Cross Validation R2 Std:   {cross_validation_r2.std():.4f}")
 
 # Predictions
 y_predictions = Best_Random_Forest_Model.predict(X_test)
@@ -67,9 +76,9 @@ Root_Mean_squared_Error = np.sqrt(mean_squared_error(y_test, y_predictions))
 r2 = r2_score(y_test, y_predictions)
 
 print("\n RANDOM FOREST MODEL RESULTS ")
-print(f"Mean Absolute Error:  {Mean_Absolute_Error}")
-print(f"Root Mean Squared Error:  {Root_Mean_squared_Error}")
-print(f"R2 Score:  {r2}")
+print(f"Mean Absolute Error:  {Mean_Absolute_Error:.2f}")
+print(f"Root Mean Squared Error:  {Root_Mean_squared_Error:.2f}")
+print(f"R2 Score:  {r2:.4f}")
 
 # Feature importance
 
